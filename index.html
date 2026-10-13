@@ -3,174 +3,200 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F5F7F6">
+<title>Lara Smile Teklif</title>
+<meta name="description" content="Lara Smile fiyat teklifi hazırlama aracı">
+<meta name="theme-color" content="#0F7C7A">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Lara Smile">
-<meta name="robots" content="noindex">
-<title>Lara Smile · Teklif</title>
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="LS Teklif">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/icon-192.png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="icon" type="image/png" href="assets/icons/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin-400-normal.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/geist-latin-600-normal.woff2" crossorigin>
+<link rel="stylesheet" href="css/app.css">
 </head>
-<body>
+<body data-branch="standard" data-view="quote" data-step="items">
 
-<!-- ============ STAFF APP ============ -->
-<div id="app">
-  <header class="top">
-    <div class="brand" id="brandMark"></div>
-    <div class="seg cur" role="group" aria-label="Para birimi">
-      <button type="button" data-cur="GBP">£</button>
-      <button type="button" data-cur="EUR">€</button>
-    </div>
-  </header>
-
-  <nav class="tabs" role="tablist">
-    <button type="button" role="tab" data-view="quote" aria-selected="true">Teklif</button>
-    <button type="button" role="tab" data-view="prices">Fiyatlar</button>
-    <button type="button" role="tab" data-view="settings">Ayarlar</button>
-  </nav>
-
-  <div id="updateBanner" class="banner" hidden>
-    <p>Yeni fiyat listesi yayınlandı. Bu cihazda kendi düzenlediğiniz fiyatlar var.</p>
-    <div class="banner-actions">
-      <button type="button" class="btn small" id="acceptUpdate">Yeni listeyi yükle</button>
-      <button type="button" class="btn small ghost" id="keepLocal">Benimkini koru</button>
-    </div>
+<header class="topbar">
+  <div class="brand-tile" id="brandTile" aria-hidden="true"></div>
+  <div class="seg seg-branch" id="branchSeg" role="group" aria-label="Şube">
+    <button type="button" data-branch="standard" aria-pressed="true">Lara Smile</button>
+    <button type="button" data-branch="premium" aria-pressed="false">Premium</button>
   </div>
+  <nav class="topnav seg" aria-label="Bölümler">
+    <button type="button" data-view="quote" aria-pressed="true">Teklif</button>
+    <button type="button" data-view="prices" aria-pressed="false">Fiyatlar</button>
+    <button type="button" data-view="settings" aria-pressed="false">Ayarlar</button>
+  </nav>
+  <span class="grow"></span>
+  <div class="seg seg-cur" id="curSeg" role="group" aria-label="Para birimi">
+    <button type="button" data-cur="GBP" aria-pressed="true">£</button>
+    <button type="button" data-cur="EUR" aria-pressed="false">€</button>
+  </div>
+</header>
 
-  <!-- QUOTE BUILDER -->
-  <main id="view-quote" class="view">
-    <div class="branch-top">
-      <div class="seg wide" id="branchTop" role="group" aria-label="Şube">
-        <button type="button" data-branch="standard">Lara Smile</button>
-        <button type="button" data-branch="premium">Lara Smile Premium</button>
+<main>
+  <!-- ======================= TEKLİF ======================= -->
+  <section class="view" id="view-quote" aria-label="Teklif">
+    <div class="stepbar">
+      <div class="seg" role="tablist" aria-label="Adım">
+        <button type="button" role="tab" data-step="items" aria-selected="true">Tedaviler <span class="count" id="stepCount" data-zero="true">0</span></button>
+        <button type="button" role="tab" data-step="sheet" aria-selected="false">Teklif</button>
       </div>
     </div>
-    <div class="finder">
-      <input type="search" id="search" placeholder="Tedavi ara" autocomplete="off" enterkeyhint="search">
-    </div>
-    <div class="chips" id="chips"></div>
-    <ul class="treatments" id="treatments"></ul>
-    <p class="empty" id="emptyList" hidden>Bu aramayla eşleşen tedavi yok.</p>
-  </main>
 
-  <!-- PRICE EDITOR -->
-  <main id="view-prices" class="view" hidden>
+    <div class="quote-grid">
+      <!-- Tedavi seçimi -->
+      <div class="pane pane-items" id="pane-items">
+        <div class="toolbar">
+          <label class="search">
+            <span class="sr">Tedavi ara</span>
+            <span id="searchIcon"></span>
+            <input id="q" type="search" placeholder="Tedavi ara" autocomplete="off" enterkeyhint="search">
+            <button type="button" id="qClear" aria-label="Aramayı temizle" hidden></button>
+          </label>
+          <div class="chips" id="chips" role="group" aria-label="Kategori"></div>
+        </div>
+        <div id="itemsHost"></div>
+        <div class="empty" id="itemsEmpty" hidden>
+          <span id="emptyIcon"></span>
+          <p id="emptyText">Eşleşen tedavi yok.</p>
+          <button type="button" class="btn small" id="emptyReset">Filtreleri temizle</button>
+        </div>
+        <div class="dock" id="dock">
+          <div class="dock-sum">
+            <span id="dockCount">Henüz tedavi seçilmedi</span>
+            <strong id="dockTotal">£0</strong>
+          </div>
+          <button type="button" class="btn primary" id="dockNext" disabled>Teklife geç <span id="dockArrow"></span></button>
+        </div>
+      </div>
+
+      <!-- Teklif sayfası -->
+      <div class="pane pane-sheet" id="pane-sheet">
+        <div class="sheet-tools">
+          <span class="small-note" id="quoteNoLabel"></span>
+          <button type="button" class="btn small ghost" id="newQuote"><span id="newIcon"></span> Yeni teklif</button>
+        </div>
+
+        <form class="panel" id="sheetForm" autocomplete="off" onsubmit="return false">
+          <h3>Teklif bilgileri</h3>
+          <div class="form-grid">
+            <label class="field"><span>Hasta adı</span>
+              <input class="input" name="patient" type="text" placeholder="Örn. Sarah Johnson" autocapitalize="words" enterkeyhint="next">
+            </label>
+            <label class="field"><span>Koordinatör</span>
+              <input class="input" name="coordinator" type="text" placeholder="Ad Soyad" autocapitalize="words" enterkeyhint="next">
+            </label>
+            <div class="row2">
+              <label class="field"><span>Geçerlilik (gün)</span>
+                <input class="input num" name="validDays" type="number" inputmode="numeric" min="1" max="365">
+              </label>
+              <div class="field"><span class="lbl">Son geçerlilik</span>
+                <div class="input num" id="validUntil" style="display:flex;align-items:center;background:var(--surface-2)"></div>
+              </div>
+            </div>
+          </div>
+        </form>
+
+        <section class="panel" id="discountPanel">
+          <h3>İndirim</h3>
+          <div class="seg disc-modes" id="discMode" role="group" aria-label="İndirim türü">
+            <button type="button" data-mode="percent" aria-pressed="true">Yüzde</button>
+            <button type="button" data-mode="amount" aria-pressed="false">Tutar</button>
+          </div>
+          <div class="disc-row">
+            <div class="presets" id="presets"></div>
+            <label class="field"><span id="discValLabel">İndirim yüzdesi</span>
+              <span class="input-affix" id="discAffix"><input class="input num" id="discValue" type="number" inputmode="decimal" min="0" step="any" placeholder="0"><span class="affix" id="discUnit">%</span></span>
+            </label>
+            <label class="field"><span>Tekliftteki açıklama</span>
+              <input class="input" id="discDesc" type="text" placeholder="Special discount">
+            </label>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h3>Hastaya not</h3>
+          <label class="field"><span class="sr">Hastaya not</span>
+            <textarea class="textarea" id="patientNote" rows="3" placeholder="Örn. 1. ziyaret: muayene, implant ve geçici kronlar. 2. ziyaret: kalıcı kronlar."></textarea>
+            <small>İngilizce yaz, teklifte olduğu gibi görünür. Ziyaret dağılımını buraya yazabilirsin.</small>
+          </label>
+        </section>
+
+        <div class="sheet-tools"><span class="small-note">Önizleme</span></div>
+        <div id="preview"></div>
+
+        <div class="actions" id="actions">
+          <button type="button" class="btn primary" id="btnPdf"><span id="pdfIcon"></span> PDF</button>
+          <button type="button" class="btn" id="btnDocx"><span id="docxIcon"></span> Word</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= FİYATLAR ======================= -->
+  <section class="view" id="view-prices" aria-label="Fiyatlar">
     <div class="view-head">
       <h2>Fiyat listesi</h2>
-      <p class="hint">Değişiklikler bu cihaza anında kaydedilir. Tüm cihazlarda güncellemek için “prices.js indir” ile dosyayı alıp GitHub’daki <code>data/prices.js</code> ile değiştirin.</p>
+      <p class="hint">Fiyatları buradan elle değiştirebilirsin. Değişiklikler bu cihazda kalır. Tüm cihazlarda güncellemek için "prices.js indir" dosyasını GitHub'daki data/prices.js ile değiştir.</p>
     </div>
+    <div class="status-line" id="priceStatus"></div>
     <div class="price-tools">
-      <button type="button" class="btn" id="addItem">Tedavi ekle</button>
-      <label class="btn ghost file-btn">Excel’den yükle<input type="file" id="importXlsx" accept=".xlsx,.xls,.csv"></label>
-      <button type="button" class="btn ghost" id="exportXlsx">Excel indir</button>
-      <button type="button" class="btn ghost" id="exportJs">prices.js indir</button>
-      <button type="button" class="btn ghost danger" id="resetPrices">Varsayılana dön</button>
+      <button type="button" class="btn small primary" id="addItem"></button>
+      <label class="btn small file-btn" id="importLabel"><input type="file" id="importXlsx" accept=".xlsx,.xls,.csv"></label>
+      <button type="button" class="btn small" id="exportXlsx"></button>
+      <button type="button" class="btn small" id="exportJs"></button>
+      <button type="button" class="btn small ghost danger" id="resetPrices"></button>
     </div>
-    <div class="price-search finder"><input type="search" id="priceSearch" placeholder="Fiyat listesinde ara" autocomplete="off"></div>
-    <ul class="price-rows" id="priceRows"></ul>
-  </main>
+    <div id="priceHost"></div>
+  </section>
 
-  <!-- SETTINGS -->
-  <main id="view-settings" class="view" hidden>
+  <!-- ======================= AYARLAR ======================= -->
+  <section class="view" id="view-settings" aria-label="Ayarlar">
     <div class="view-head">
       <h2>Ayarlar</h2>
       <p class="hint">Bu bilgiler teklifin alt kısmında görünür ve bu cihazda saklanır.</p>
     </div>
-    <form class="form" id="settingsForm" autocomplete="off">
-      <label>Varsayılan koordinatör<input name="coordinator" placeholder="Ad Soyad"></label>
-      <label>Telefon / WhatsApp<input name="phone" inputmode="tel" placeholder="+90 …"></label>
-      <label>E-posta<input name="email" inputmode="email" placeholder="info@…"></label>
-      <label>Web sitesi<input name="website" inputmode="url" placeholder="www.…"></label>
-      <label>Adres<input name="address" placeholder="Lara, Antalya"></label>
-      <label>Teklif geçerlilik süresi (gün)<input name="validDays" type="number" inputmode="numeric" min="1" max="365"></label>
-      <label>Teklif alt notu<textarea name="terms" rows="4"></textarea></label>
-    </form>
-    <div class="view-head">
-      <h2>İndirim şablonları</h2>
-      <p class="hint">Teklif ekranında tek dokunuşla seçilir; adı, oranı ve açıklaması otomatik dolar.</p>
-    </div>
-    <ul class="preset-rows" id="presetRows"></ul>
-    <div class="price-tools">
-      <button type="button" class="btn ghost" id="addPreset">Şablon ekle</button>
-      <button type="button" class="btn ghost danger" id="resetPresets">Varsayılan şablonlar</button>
-    </div>
-  </main>
-
-  <!-- TOTAL BAR -->
-  <div class="totalbar" id="totalbar">
-    <div class="tb-sum">
-      <span class="tb-count" id="tbCount">Tedavi seçilmedi</span>
-      <strong class="tb-total" id="tbTotal">£0</strong>
-    </div>
-    <button type="button" class="btn primary" id="openSheet" disabled>Teklifi hazırla</button>
-  </div>
-
-  <!-- QUOTE SHEET -->
-  <section class="sheet" id="sheet" aria-hidden="true" aria-labelledby="sheetTitle">
-    <div class="sheet-head">
-      <button type="button" class="icon-btn" id="closeSheet" aria-label="Geri">
-        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <h2 id="sheetTitle">Teklif bilgileri</h2>
-      <button type="button" class="link-btn" id="newQuote">Yeni teklif</button>
-    </div>
-    <div class="sheet-body">
-      <form class="form" id="quoteForm" autocomplete="off">
-        <label>Hasta adı<input name="patient" placeholder="Örn. Sarah Mitchell" autocapitalize="words"></label>
-        <div class="field">
-          <span class="label">Şube</span>
-          <div class="seg wide" id="branchSeg">
-            <button type="button" data-branch="standard">Lara Smile</button>
-            <button type="button" data-branch="premium">Lara Smile Premium</button>
-          </div>
-        </div>
-        <div class="row2">
-          <label>Koordinatör<input name="coordinator" placeholder="Ad Soyad"></label>
-          <label>Geçerlilik (gün)<input name="validDays" type="number" inputmode="numeric" min="1"></label>
-        </div>
-        <div class="field block">
-          <span class="label">İndirim</span>
-          <div class="chips mini" id="discPresets"></div>
-          <div class="discount">
-            <div class="seg" id="discSeg">
-              <button type="button" data-disc="pct">%</button>
-              <button type="button" data-disc="amt" id="discAmtBtn">£</button>
-            </div>
-            <input name="discount" type="number" inputmode="decimal" min="0" placeholder="0">
-          </div>
-          <div class="disc-extra" id="discExtra">
-            <label>İndirim adı (teklifte görünür)<input name="discLabel" placeholder="Örn. Event discount"></label>
-            <label>İndirim açıklaması<textarea name="discDetail" rows="2" placeholder="Örn. You save {amount} with our event offer."></textarea></label>
-            <p class="hint small">{amount} indirim tutarı, {percent} yüzde, {valid} geçerlilik tarihi olarak otomatik yazılır.</p>
-          </div>
-        </div>
-        <label>Hastaya not (isteğe bağlı)<textarea name="note" rows="3" placeholder="Örn. Hotel and airport transfers are included."></textarea></label>
-      </form>
-
-      <div class="sheet-total"><span>Teklif toplamı</span><strong id="sheetTotal"></strong></div>
-      <div class="outputs">
-        <button type="button" class="out" data-out="pdf">
-          <span class="out-name">PDF</span><span class="out-sub">Paylaş veya indir</span>
-        </button>
-        <button type="button" class="out" data-out="docx">
-          <span class="out-name">Word</span><span class="out-sub">Düzenlenebilir .docx</span>
-        </button>
+    <form class="settings-grid" id="settingsForm" autocomplete="off" onsubmit="return false">
+      <label class="field"><span>Varsayılan koordinatör</span><input class="input" name="coordinator" placeholder="Ad Soyad"></label>
+      <label class="field"><span>Telefon / WhatsApp</span><input class="input" name="phone" inputmode="tel" placeholder="+90 5xx xxx xx xx"></label>
+      <label class="field"><span>E-posta</span><input class="input" name="email" inputmode="email" autocapitalize="off" placeholder="info@larasmile.com"></label>
+      <label class="field"><span>Web sitesi</span><input class="input" name="website" inputmode="url" autocapitalize="off" placeholder="www.larasmile.com"></label>
+      <label class="field"><span>Adres</span><input class="input" name="address" placeholder="Lara, Antalya"></label>
+      <label class="field"><span>Varsayılan geçerlilik süresi (gün)</span><input class="input num" name="validDays" type="number" inputmode="numeric" min="1" max="365"></label>
+      <label class="field"><span>Teklif alt notu</span><textarea class="textarea" name="terms" rows="4"></textarea></label>
+      <div class="panel" style="margin:0">
+        <h3>Logolar</h3>
+        <p class="hint">PNG ya da JPG yükle. Logo yoksa yazı logosu kullanılır. Logolar bu cihazda saklanır.</p>
+        <div class="form-grid" id="logoSlots"></div>
       </div>
-
-      <p class="preview-label">Önizleme</p>
-      <div class="preview-frame"><div id="preview"></div></div>
-    </div>
+      <div class="saved-note" id="savedNote" aria-live="polite"></div>
+    </form>
   </section>
-</div>
+</main>
+
+<nav class="tabbar" aria-label="Bölümler">
+  <button type="button" data-view="quote" aria-current="page"><span data-ic="receipt"></span>Teklif</button>
+  <button type="button" data-view="prices"><span data-ic="tag"></span>Fiyatlar</button>
+  <button type="button" data-view="settings"><span data-ic="gear"></span>Ayarlar</button>
+</nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<dialog id="dlg"><div class="dlg" id="dlgBody"></div></dialog>
 
+<script src="js/icons.js"></script>
 <script src="data/prices.js"></script>
 <script src="data/config.js"></script>
-<script src="assets/export.js"></script>
-<script src="assets/app.js"></script>
+<script src="js/core.js"></script>
+<script src="js/quote.js"></script>
+<script src="js/manage.js"></script>
+<script src="js/export-pdf.js"></script>
+<script src="js/export-docx.js"></script>
+<script src="js/app.js"></script>
+<script src="vendor/jspdf.umd.min.js" defer></script>
+<script src="vendor/docx.umd.js" defer></script>
+<script src="vendor/xlsx.full.min.js" defer></script>
 </body>
 </html>

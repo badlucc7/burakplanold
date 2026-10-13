@@ -1,21 +1,23 @@
-# Lara Smile — Teklif Uygulaması
+# Lara Smile Teklif
 
-Telefondan hızlı fiyat teklifi hazırlama: adet gir, toplam otomatik hesaplansın, PDF / Word / web linki olarak gönder.
+Telefondan kullanılmak üzere tasarlanmış fiyat teklifi sitesi. Sunucu gerekmez, GitHub Pages'te çalışır.
 
-## Yayınlama (GitHub Pages)
-1. Bu klasördeki tüm dosyaları yeni bir GitHub reposuna yükleyin.
-2. Settings → Pages → Branch: `main`, klasör: `/ (root)` → Save.
-3. Birkaç dakika sonra `https://KULLANICI.github.io/REPO/` adresinde yayında.
-4. Telefonda Safari/Chrome ile açıp "Ana Ekrana Ekle" deyin.
+## GitHub'da yayınlama
+
+1. GitHub'da yeni bir repo aç ve bu klasörün içindeki her şeyi yükle.
+2. Settings > Pages > Branch: `main` / root > Save.
+3. Birkaç dakika sonra `kullaniciadi.github.io/repo-adi` adresinde yayında olur.
+4. Telefonda aç, Paylaş > "Ana Ekrana Ekle" de. Uygulama gibi açılır.
 
 ## Dosyalar
-- `data/prices.js` — varsayılan fiyat listesi. Güncellerken `version` değerini değiştirin.
-- `data/config.js` — telefon, e-posta, web, adres, alt not, logo yolu.
-- `assets/logos/` — şube logoları (`lara-smile.png`, `lara-smile-premium.png`). Değiştirmek için aynı adla yeni PNG yükleyin.
 
-## Teklife özel fiyat
-Tedavi seçildiğinde satırın altındaki fiyat kutusundan sadece o teklif için birim fiyat değiştirilebilir (liste fiyatı değişmez).
+- `data/prices.js`: varsayılan fiyat listesi. Değiştirip yüklersen tüm cihazlar açılışta yeni listeyi fark eder. `version` tarihini güncelle.
+- `data/config.js`: telefon, e-posta, web sitesi, adres, alt not, grup şirketleri ve logo yolları.
+- `assets/logos/`: logo dosyaları. Yolu `data/config.js` içindeki `logos` bölümüne yaz. Ya da Ayarlar sekmesinden cihazda yükle.
+- `sw.js`: çevrimdışı çalışma. Siteyi güncellediğinde `CACHE` adındaki sürümü artır (`lsq-v2` gibi).
 
 ## Fiyat güncelleme
-Uygulamadaki "Fiyatlar" sekmesinde yapılan değişiklikler o cihaza kaydedilir.
-Tüm cihazlar için: "prices.js indir" → GitHub'da `data/prices.js` dosyasını bununla değiştirin.
+
+Fiyatlar sekmesinde değişiklik bu cihazda kalır. Tüm cihazlar için: "prices.js indir" dosyasını GitHub'daki `data/prices.js` ile değiştir. Elle değişiklik yapılmış cihazlar yeni listeyi alırken önce sorar.
+
+Excel'den yükleme: ilk satırda `Treatment`, `GBP`, `EUR` başlıkları olan bir dosya yeterli.
